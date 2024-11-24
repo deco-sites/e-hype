@@ -1,0 +1,13 @@
+{
+  "__resolveType": "blog/loaders/Blogpost.ts",
+  "post": {
+    "authors": [],
+    "categories": [],
+    "extraProps": [],
+    "title": "sdds",
+    "excerpt": "sdsdsd",
+    "date": "2024-11-02",
+    "slug": "sdsadsa",
+    "content": "<p>addsadsad</p>"
+  }
+}
