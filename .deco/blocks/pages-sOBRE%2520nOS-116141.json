@@ -3,13 +3,13 @@
   "path": "/sobre-nos",
   "sections": [
     {
-      "__resolveType": "website/sections/Rendering/Lazy.tsx",
-      "section": {
-        "__resolveType": "site/sections/Hero.tsx",
-        "title": "<p>Click here to tweak this text however you want.</p>",
-        "placement": "left",
-        "cta": []
-      }
+      "__resolveType": "site/sections/Hero.tsx",
+      "title": "<p>Click here to tweak this text however you want.</p>",
+      "placement": "left",
+      "cta": [],
+      "backgroundColor": "#737373",
+      "textColor": "#ffffff",
+      "description": "asdasdasd"
     }
   ],
   "seo": {
