@@ -1,0 +1,19 @@
+{
+  "name": "sOBRE nOS",
+  "path": "/sobre-nos",
+  "sections": [
+    {
+      "__resolveType": "website/sections/Rendering/Lazy.tsx",
+      "section": {
+        "__resolveType": "site/sections/Hero.tsx",
+        "title": "<p>Click here to tweak this text however you want.</p>",
+        "placement": "left",
+        "cta": []
+      }
+    }
+  ],
+  "seo": {
+    "__resolveType": "website/sections/Seo/SeoV2.tsx"
+  },
+  "__resolveType": "website/pages/Page.tsx"
+}

@@ -1,96 +1,90 @@
-import type { ImageWidget } from "apps/admin/widgets.ts";
-import Image from "apps/website/components/Image.tsx";
+import { useEffect, useState } from "preact/hooks";
 
-export interface CTA {
-  id?: string;
-  href: string;
-  text: string;
-  outline?: boolean;
+interface GitHubUser {
+  login: string;
+  avatar_url: string;
+  name: string;
+  bio: string;
+  public_repos: number;
+  followers: number;
+  following: number;
 }
 
-export interface Props {
+interface Props {
   /**
    * @format rich-text
-   * @default Click here to tweak this text however you want.
    */
   title?: string;
+  /**
+   * @format textarea
+   */
   description?: string;
-  image?: ImageWidget;
-  placement?: "left" | "right";
-  cta?: CTA[];
+  /**
+   * @format color-input
+   */
+  backgroundColor?: string;
+  /**
+   * @format color-input
+   */
+  textColor?: string;
 }
 
-const PLACEMENT = {
-  left: "flex-col text-left lg:flex-row-reverse",
-  right: "flex-col text-left lg:flex-row",
-};
-
-export default function HeroFlats({
-  title = "Click here to tweak this text however you want.",
-  description = "This text is entirely editable, tailor it freely.",
-  image,
-  placement = "left",
-  cta,
+export default function GitHubUserProfile({
+  title = "GitHub User Profile",
+  description = "Displaying data from the GitHub API",
+  backgroundColor = "#f0f0f0",
+  textColor = "#333333",
 }: Props) {
+  const [user, setUser] = useState<GitHubUser | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("https://api.github.com/users/zCastleM")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+        return response.json();
+      })
+      .then((data: GitHubUser) => {
+        setUser(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
   return (
-    <div>
-      <div class="flex flex-col gap-8 items-center mx-auto">
-        <div
-          class={`flex w-full xl:container xl:mx-auto py-20 mx-5 md:mx-10 z-10 ${
-            image
-              ? PLACEMENT[placement]
-              : "flex-col items-center justify-center text-center"
-          } lg:pt-36 lg:pb-20 gap-12 md:gap-20 items-center`}
-        >
-          {image && (
-            <Image
-              width={640}
-              class="lg:w-1/2 object-fit w-full"
-              sizes="(max-width: 640px) 100vw, 30vw"
-              src={image}
-              alt={image}
-              decoding="async"
-              loading="lazy"
-            />
-          )}
-          <div
-            class={`mx-6 lg:mx-auto lg:w-full space-y-4 gap-4 ${
-              image
-                ? "lg:w-1/2 lg:max-w-xl"
-                : "flex flex-col items-center justify-center lg:max-w-3xl"
-            }`}
-          >
-            <div
-              class="font-medium inline-block leading-[100%] lg:text-[90px] text-4xl tracking-[-2.4px]"
-              dangerouslySetInnerHTML={{
-                __html: title,
-              }}
-            >
+    <div
+      class="p-6 rounded-lg shadow-lg"
+      style={{ backgroundColor, color: textColor }}
+    >
+      <h2 class="text-3xl font-bold mb-4">{title}</h2>
+      <p class="mb-6">{description}</p>
+
+      {loading && <p>Loading...</p>}
+      {error && <p class="text-red-500">Error: {error}</p>}
+      {user && (
+        <div class="flex flex-col md:flex-row items-center gap-6">
+          <img
+            src={user.avatar_url}
+            alt={user.name || user.login}
+            class="w-32 h-32 rounded-full"
+          />
+          <div>
+            <h3 class="text-2xl font-semibold">{user.name || user.login}</h3>
+            <p class="text-lg mb-2">{user.bio}</p>
+            <div class="flex gap-4">
+              <span>Repos: {user.public_repos}</span>
+              <span>Followers: {user.followers}</span>
+              <span>Following: {user.following}</span>
             </div>
-            <p class="leading-[150%] md:text-md text-lg">
-              {description}
-            </p>
-            {cta && cta.length > 0 &&
-              (
-                <div class="flex gap-3 items-center lg:pt-20">
-                  {cta?.map((item) => (
-                    <a
-                      key={item?.id}
-                      id={item?.id}
-                      href={item?.href}
-                      target={item?.href.includes("http") ? "_blank" : "_self"}
-                      class={`font-normal btn btn-primary ${
-                        item.outline && "btn-outline"
-                      }`}
-                    >
-                      {item?.text}
-                    </a>
-                  ))}
-                </div>
-              )}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
